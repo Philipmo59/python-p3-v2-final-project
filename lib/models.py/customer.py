@@ -13,11 +13,11 @@ class Customer:
         self.age = age
         self.address = address
 
-    def __repr__(self):
+    def __str__(self):
         return (
             f"<Customer {self.id}: {self.name}, {self.age}, {self.address} " 
         )
-    
+
     @classmethod
     def create_table(cls):
         """ Create a new table to persist the attributes of Customer instances """
@@ -41,17 +41,15 @@ class Customer:
         """
         CURSOR.execute(sql)
         CONN.commit()
+        print("done")
     
     def save(self):
-        """ Insert a new row with the name, job title, and department id values of the current Customer object.
-        Update object id attribute using the primary key value of new row.
-        Save the object in local dictionary using table row's PK as dictionary key"""
         sql = """
                 INSERT INTO customers (name, age, address)
                 VALUES (?, ?, ?)
         """
 
-        CURSOR.execute(sql, (self.name, self.name, self.address))
+        CURSOR.execute(sql, (self.name, self.age, self.address))
         CONN.commit()
 
         self.id = CURSOR.lastrowid
@@ -137,12 +135,9 @@ class Customer:
         return cls.instance_from_db(row) if row else None
 
 
-
+# Customer.drop_table()
 
 Customer.create_table()
 susan = Customer ("susan","10","apple st")
 susan.save()
-print(repr(susan))
-
-unknown = Customer.find_by_id(1)
-print(unknown)
+print(susan)
