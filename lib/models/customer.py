@@ -72,25 +72,7 @@ class Customer:
 
         CURSOR.execute(sql, (self.id,))
         CONN.commit()
-    
-    @classmethod
-    def get_all(cls):
-        sql = """
-            SELECT * FROM customers
-        """
-        CURSOR.execute(sql).fetchall()
-
-    def update(self):
-        """Update the table row corresponding to the current Customer instance."""
-        sql = """
-            UPDATE employees
-            SET name = ?, age = ?, address = ?
-            WHERE id = ?
-        """
-        CURSOR.execute(sql, (self.name, self.age,
-                             self.address, self.id))
-        CONN.commit()
-
+        
     @classmethod
     def instance_from_db(cls, row):
         """Return a Customer object having the attribute values from the table row."""
@@ -108,6 +90,26 @@ class Customer:
             customer.id = row[0]
             cls.all[customer.id] = customer
         return customer
+
+    @classmethod
+    def get_all(cls):
+        sql = """
+            SELECT * FROM customers
+        """
+        rows = CURSOR.execute(sql).fetchall()
+        return [cls.instance_from_db(row) for row in rows]
+
+
+    def update(self):
+        """Update the table row corresponding to the current Customer instance."""
+        sql = """
+            UPDATE employees
+            SET name = ?, age = ?, address = ?
+            WHERE id = ?
+        """
+        CURSOR.execute(sql, (self.name, self.age,
+                             self.address, self.id))
+        CONN.commit()
 
 
     @classmethod
