@@ -8,7 +8,7 @@ from helpers import (
 )
 
 def main():
-    Customer.drop_table()
+
     Customer.create_table()
     menu()
     choice = input("> ")

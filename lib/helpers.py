@@ -32,12 +32,12 @@ def add_customer():
         print("Error")
 
 def update_customer():
-    customer_id = input("What is the Customer ID you want to change?: ")
-    print("Please update the following: ")
-    customer_name = input("Name: ")
-    customer_age = input("Age: ")
-    customer_address = input("Address: ")
-    if customer_id:
+    customer_id = int(input("What is the Customer ID you want to change?: "))
+    if Customer.find_by_id(customer_id):
+        print("Please update the following: ")
+        customer_name = input("Name: ")
+        customer_age = input("Age: ")
+        customer_address = input("Address: ")
         Customer.update(customer_name,customer_age,customer_address)
         print("done")
     else:
