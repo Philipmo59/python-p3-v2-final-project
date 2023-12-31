@@ -3,18 +3,16 @@ import sqlite3
 CONN = sqlite3.connect('tracking_order.db')
 CURSOR = CONN.cursor()
 
-
-class Orders:
+class Order:
     all = {}
 
-    def __init__(self,item_name,quantity,customer_id,id = None):
+    def __init__(self,item_name,quantity,id = None):
         self.id = id
         self.item_name = item_name
         self.quantity = quantity
-        self.customer_id = customer_id
 
     def __str__(self) -> str:
-        return f"Order {self.id}: {self.item_name}, Quantity: {self.quantity}, Customer ID: {self.customer_id}"
+        return f"Order {self.id}: {self.item_name}, Quantity: {self.quantity}"
     
     @classmethod
     def create_table(cls):
@@ -24,7 +22,7 @@ class Orders:
             id INTEGER PRIMARY KEY,
             item_name TEXT,
             quantity INTEGER,
-            customer_id INTEGER)
+            )
         """
         CURSOR.execute(sql)
         CONN.commit()
@@ -40,19 +38,19 @@ class Orders:
 
     def save(self):
         sql = """
-                INSERT INTO orders (item_name, quantity, customer_id)
+                INSERT INTO orders (item_name, quantity)
                 VALUES (?, ?, ?)
         """
 
-        CURSOR.execute(sql, (self.item_name, self.quantity, self.customer_id))
+        CURSOR.execute(sql, (self.item_name, self.quantity))
         CONN.commit()
 
         self.id = CURSOR.lastrowid
     
     @classmethod
-    def create(cls, item_name, quantity, customer_id):
+    def create(cls, item_name, quantity):
         """ Initialize a new Order instance and save the object to the database """
-        customer = cls(item_name, quantity, customer_id)
+        customer = cls(item_name, quantity)
         customer.save()
         return customer
     @classmethod
@@ -78,11 +76,10 @@ class Orders:
         """Update the table row corresponding to the current Order instance."""
         sql = """
             UPDATE orders
-            SET item_name = ?, quantity = ?, customer_id = ?
+            SET item_name = ?, quantity = ?
             WHERE id = ?
         """
-        CURSOR.execute(sql, (self.item_name, self.quantity,
-                             self.customer_id, self.id))
+        CURSOR.execute(sql, (self.item_name, self.quantity,self.id))
         CONN.commit()
 
 
@@ -96,7 +93,6 @@ class Orders:
             # ensure attributes match row values in case local instance was modified
             order.item_name = row[1]
             order.quantity = row[2]
-            order.customer_id = row[3]
         else:
             # not in dictionary, create new instance and add to dictionary
             order = cls(row[1], row[2], row[3])
@@ -128,10 +124,8 @@ class Orders:
 
         row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
-
-
-
     
-Orders.create_table()
-ps5 = Orders("ps5",3,1)
-ps5.save()
+
+
+
+

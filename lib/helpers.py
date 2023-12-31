@@ -1,4 +1,5 @@
 from models.customer import Customer
+from models.shipping_orders import Order
 
 def list_customers():
     list_of_customers = Customer.get_all()
@@ -13,13 +14,6 @@ def find_by_name():
         print(customer_object)
     else:
         print("Sorry, this name does not exist in the database")
-def find_by_id():
-    customer_id = input("What is the id you are looking for?: ")
-    customer_object= Customer.find_by_id(customer_id) 
-    if customer_object:
-        print(customer_object)
-    else:
-        print("Sorry this id does not exist in the database")
 
 def add_customer():
     customer_name = input("What is the Customer's name?: ")
@@ -42,4 +36,19 @@ def update_customer():
         print("done")
     else:
         print("Error Occurred")
-    
+
+def add_order():
+    customer_id = input("Which customer is purchasing? Please submit your id: ")
+    if customer := Customer.find_by_id(customer_id):
+        print(Customer.find_by_id(customer_id))
+        new_order = input("What is the new order?")
+        quantity = int(input("How many?"))
+        new_item = Order(new_order,quantity)
+        customer.shipping_orders.append(new_item)
+        clear()
+        for item in customer.shipping_orders:
+            print(f"Item: {item.item_name} Quantity: {item.quantity}")
+        print(customer)
+
+    else:
+        print("This Customer does not exist")

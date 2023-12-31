@@ -12,11 +12,24 @@ class Customer:
         self.name = name
         self.age = age
         self.address = address
+        self.shipping_orders = []
 
     def __str__(self):
         return (
-            f"<Customer {self.id}: {self.name}, {self.age}, {self.address} " 
+            f"<Customer {self.id}: {self.name}, {self.age}, {self.address}, {self.shipping_orders} " 
         )
+    @property
+    def name(self):
+        return self._name
+    
+    @name.setter
+    def name(self, name):
+        if isinstance(name, str) and len(name):
+            self._name = name
+        else:
+            raise ValueError(
+                "Name must be a non-empty string"
+            )
 
     @classmethod
     def create_table(cls):
@@ -31,6 +44,7 @@ class Customer:
         """
         CURSOR.execute(sql)
         CONN.commit()
+        print("Table has been created")
 
 
     @classmethod
@@ -41,7 +55,7 @@ class Customer:
         """
         CURSOR.execute(sql)
         CONN.commit()
-        print("done")
+        print("Table has been Dropped")
     
     def save(self):
         sql = """
@@ -53,6 +67,7 @@ class Customer:
         CONN.commit()
 
         self.id = CURSOR.lastrowid
+        type(self).all[self.id] = self
 
     @classmethod
     def create(cls, name, age, address):
@@ -60,6 +75,7 @@ class Customer:
         customer = cls(name, age, address)
         customer.save()
         return customer
+    
     @classmethod
     def delete(self):
         """Delete the table row corresponding to the current Customer instance,
@@ -135,11 +151,3 @@ class Customer:
 
         row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
-
-
-# Customer.drop_table()
-
-Customer.create_table()
-susan = Customer ("susan","10","apple st")
-susan.save()
-print(susan)
