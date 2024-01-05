@@ -1,0 +1,3 @@
+# Need to fix update in cusotomer.py
+# Create a one to many relationship 
+# Find a way to add orders to a custoemr instance (new order disappears after program ends)
