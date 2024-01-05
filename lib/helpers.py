@@ -20,6 +20,7 @@ def add_customer():
     customer_age = input("What is the Customer's age?: ")
     customer_address = input("What is the Customer's address?: ")
     try: 
+        Customer.create_table()
         Customer.create(customer_name,customer_age,customer_address)
         print("A Customer was born")
     except:
@@ -45,6 +46,7 @@ def add_order():
         quantity = int(input("How many?"))
         new_item = Order(new_order,quantity)
         customer.shipping_orders.append(new_item)
+        customer.add_order(new_item)#method to be created 
         for item in customer.shipping_orders:
             print(f"Item: {item.item_name} Quantity: {item.quantity}")
         print(customer)

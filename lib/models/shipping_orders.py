@@ -119,7 +119,7 @@ class Order:
         sql = """
             SELECT *
             FROM orders
-            WHERE name is ?
+            WHERE name = ?
         """
 
         row = CURSOR.execute(sql, (name,)).fetchone()

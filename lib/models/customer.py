@@ -39,8 +39,9 @@ class Customer:
             id INTEGER PRIMARY KEY,
             name TEXT,
             age INTEGER,
-            address TEXT
-            )
+            address TEXT,
+            shipping_orders TEXT
+            );
         """
         CURSOR.execute(sql)
         CONN.commit()
@@ -59,20 +60,20 @@ class Customer:
     
     def save(self):
         sql = """
-                INSERT INTO customers (name, age, address)
-                VALUES (?, ?, ?)
+                INSERT INTO customers (name, age, address, shipping_orders)
+                VALUES (?, ?, ?, ?)
         """
 
-        CURSOR.execute(sql, (self.name, self.age, self.address))
+        CURSOR.execute(sql, (self.name, self.age, self.address,self.shipping_orders))
         CONN.commit()
 
         self.id = CURSOR.lastrowid
         type(self).all[self.id] = self
 
     @classmethod
-    def create(cls, name, age, address):
+    def create(cls, name, age, address,shipping_orders):
         """ Initialize a new Customer instance and save the object to the database """
-        customer = cls(name, age, address)
+        customer = cls(name, age, address,shipping_orders)
         customer.save()
         return customer
     
@@ -100,10 +101,12 @@ class Customer:
             customer.name = row[1]
             customer.age = row[2]
             customer.address = row[3]
+            customer.shipping_orders.append(row[4])
         else:
             # not in dictionary, create new instance and add to dictionary
             customer = cls(row[1], row[2], row[3])
             customer.id = row[0]
+            customer.shipping_orders.append(row[4]) 
             cls.all[customer.id] = customer
         return customer
 
@@ -113,20 +116,30 @@ class Customer:
             SELECT * FROM customers
         """
         rows = CURSOR.execute(sql).fetchall()
+        
         return [cls.instance_from_db(row) for row in rows]
 
 
     def update(self):
         """Update the table row corresponding to the current Customer instance."""
         sql = """
-            UPDATE employees
-            SET name = ?, age = ?, address = ?
+            UPDATE customers
+            SET name = ?, age = ?, address = ? shipping_orders = ?
             WHERE id = ?
         """
         CURSOR.execute(sql, (self.name, self.age,
-                             self.address, self.id))
+                             self.address, self.id,self.shipping_orders))
         CONN.commit()
 
+
+    def add_order(self, order)->None:
+        '''Takes in an instance of an Order and appends it to the customer database'''
+        sql = '''
+            UPDATE customers SET shipping_orders = ? WHERE id = ?
+        '''
+        CURSOR.execute(sql, (order.item_name, self.id))
+        CONN.commit()
+        print(f"Added Order {order.item_name}")
 
     @classmethod
     def find_by_id(cls, id):
@@ -151,4 +164,3 @@ class Customer:
 
         row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
-
