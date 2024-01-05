@@ -16,7 +16,7 @@ class Customer:
 
     def __str__(self):
         return (
-            f"<Customer {self.id}: {self.name}, {self.age}, {self.address}, {self.shipping_orders} " 
+            f"<Customer {self.id}: {self.name}, Age: {self.age}, Address: {self.address}, Shipping Orders: {self.shipping_orders} " 
         )
     @property
     def name(self):
@@ -151,3 +151,4 @@ class Customer:
 
         row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
+

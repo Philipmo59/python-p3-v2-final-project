@@ -45,7 +45,6 @@ def add_order():
         quantity = int(input("How many?"))
         new_item = Order(new_order,quantity)
         customer.shipping_orders.append(new_item)
-        clear()
         for item in customer.shipping_orders:
             print(f"Item: {item.item_name} Quantity: {item.quantity}")
         print(customer)
