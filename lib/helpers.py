@@ -19,7 +19,7 @@ def add_customer():
     customer_name = input("What is the Customer's name?: ")
     customer_age = input("What is the Customer's age?: ")
     customer_address = input("What is the Customer's address?: ")
-    try: 
+    try:
         Customer.create_table()
         Customer.create(customer_name,customer_age,customer_address)
         print("A Customer was born")
@@ -45,10 +45,9 @@ def add_order():
         new_order = input("What is the new order?")
         quantity = int(input("How many?"))
         new_item = Order(new_order,quantity)
-        customer.shipping_orders.append(new_item)
-        customer.add_order(new_item)#method to be created 
-        for item in customer.shipping_orders:
-            print(f"Item: {item.item_name} Quantity: {item.quantity}")
+        customer.shipping_orders += new_item.item_name
+        customer.add_order(new_item)
+        print(f"Item: {new_item.item_name} Quantity: {new_item.quantity}")
         print(customer)
 
     else:

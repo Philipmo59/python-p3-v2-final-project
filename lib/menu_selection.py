@@ -12,14 +12,19 @@ def main():
     choice = input("> ")
     if choice == "1":
         list_customers()
+        main()
     if choice == "2":
         find_by_name()
+        main()
     if choice == "3":
         add_customer()
+        main()
     if choice == "4":
         update_customer()
+        main()
     if choice == "5":
         add_order()
+        main()
 
 def menu():
     list_of_options = ["Exit the Program", "List all Customers","Find Customer by name","Add a Customer","Update a Customer","Add Order"]

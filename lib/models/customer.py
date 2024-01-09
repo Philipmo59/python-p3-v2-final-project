@@ -12,7 +12,7 @@ class Customer:
         self.name = name
         self.age = age
         self.address = address
-        self.shipping_orders = []
+        self.shipping_orders = " "
 
     def __str__(self):
         return (
@@ -60,20 +60,20 @@ class Customer:
     
     def save(self):
         sql = """
-                INSERT INTO customers (name, age, address, shipping_orders)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO customers (name, age, address)
+                VALUES (?, ?, ?)
         """
 
-        CURSOR.execute(sql, (self.name, self.age, self.address,self.shipping_orders))
+        CURSOR.execute(sql, (self.name, self.age, self.address))
         CONN.commit()
 
         self.id = CURSOR.lastrowid
         type(self).all[self.id] = self
 
     @classmethod
-    def create(cls, name, age, address,shipping_orders):
+    def create(cls, name, age, address):
         """ Initialize a new Customer instance and save the object to the database """
-        customer = cls(name, age, address,shipping_orders)
+        customer = cls(name, age, address)
         customer.save()
         return customer
     
@@ -101,12 +101,12 @@ class Customer:
             customer.name = row[1]
             customer.age = row[2]
             customer.address = row[3]
-            customer.shipping_orders.append(row[4])
+            customer.shipping_orders = row[4]
         else:
             # not in dictionary, create new instance and add to dictionary
             customer = cls(row[1], row[2], row[3])
             customer.id = row[0]
-            customer.shipping_orders.append(row[4]) 
+            customer.shipping_orders = row[4] 
             cls.all[customer.id] = customer
         return customer
 
