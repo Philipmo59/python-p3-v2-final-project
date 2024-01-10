@@ -6,10 +6,11 @@ CURSOR = CONN.cursor()
 class Order:
     all = {}
 
-    def __init__(self,item_name,quantity,id = None):
+    def __init__(self,item_name,quantity,foreign_key = None,id = None):
         self.id = id
         self.item_name = item_name
         self.quantity = quantity
+        self.foreign_key = foreign_key
 
     def __str__(self) -> str:
         return f"Order {self.id}: {self.item_name}, Quantity: {self.quantity}"
@@ -22,6 +23,7 @@ class Order:
             id INTEGER PRIMARY KEY,
             item_name TEXT,
             quantity INTEGER,
+            foreign_key INTEGER
             )
         """
         CURSOR.execute(sql)
@@ -38,19 +40,19 @@ class Order:
 
     def save(self):
         sql = """
-                INSERT INTO orders (item_name, quantity)
+                INSERT INTO orders (item_name, quantity,foreign_key)
                 VALUES (?, ?, ?)
         """
 
-        CURSOR.execute(sql, (self.item_name, self.quantity))
+        CURSOR.execute(sql, (self.item_name, self.quantity, self.foreign_key))
         CONN.commit()
 
         self.id = CURSOR.lastrowid
     
     @classmethod
-    def create(cls, item_name, quantity):
+    def create(cls, item_name, quantity,foreign_key):
         """ Initialize a new Order instance and save the object to the database """
-        customer = cls(item_name, quantity)
+        customer = cls(item_name, quantity,foreign_key)
         customer.save()
         return customer
     @classmethod

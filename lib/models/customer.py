@@ -12,12 +12,27 @@ class Customer:
         self.name = name
         self.age = age
         self.address = address
-        self.shipping_orders = " "
+        self.shipping_orders = ""
 
     def __str__(self):
-        return (
-            f"<Customer {self.id}: {self.name}, Age: {self.age}, Address: {self.address}, Shipping Orders: {self.shipping_orders} " 
-        )
+        #Look through the Order's Table and with the foreign key, return all the orders that belong to that foreign key
+        if self.shipping_orders != "":
+            return (
+                f"<Customer {self.id}: {self.name}, Age: {self.age}, Address: {self.address}, Shipping Orders: {self.shipping_orders} " 
+            )
+        sql = """
+            SELECT * FROM orders WHERE foreign_key = ?;
+        """
+        CURSOR.execute(sql,(self.id,))
+        customer_orders = CURSOR.fetchall()
+        print(customer_orders)
+        if len(customer_orders) > 0 :
+            for customer_order in customer_orders:
+                # order_id,order_name,order_quantity,order_foreign_key = customer_order
+                print(customer_order)
+                self.shipping_orders += customer_order[1]
+        return f"<Customer {self.id}: {self.name}, Age: {self.age}, Address: {self.address}, Shipping Orders: {self.shipping_orders} "   
+
     @property
     def name(self):
         return self._name
@@ -60,11 +75,11 @@ class Customer:
     
     def save(self):
         sql = """
-                INSERT INTO customers (name, age, address)
-                VALUES (?, ?, ?)
+                INSERT INTO customers (name, age, address, shipping_orders)
+                VALUES (?, ?, ?,?);
         """
 
-        CURSOR.execute(sql, (self.name, self.age, self.address))
+        CURSOR.execute(sql, (self.name, self.age, self.address,self.shipping_orders))
         CONN.commit()
 
         self.id = CURSOR.lastrowid
@@ -104,6 +119,7 @@ class Customer:
             customer.shipping_orders = row[4]
         else:
             # not in dictionary, create new instance and add to dictionary
+            print(row[4])
             customer = cls(row[1], row[2], row[3])
             customer.id = row[0]
             customer.shipping_orders = row[4] 
@@ -132,12 +148,13 @@ class Customer:
         CONN.commit()
 
 
-    def add_order(self, order)->None:
+    def add_order(self,order)->None:
         '''Takes in an instance of an Order and appends it to the customer database'''
         sql = '''
             UPDATE customers SET shipping_orders = ? WHERE id = ?
         '''
-        CURSOR.execute(sql, (order.item_name, self.id))
+        self.shipping_orders += f", {order.item_name}"
+        CURSOR.execute(sql, (self.shipping_orders, self.id))
         CONN.commit()
         print(f"Added Order {order.item_name}")
 

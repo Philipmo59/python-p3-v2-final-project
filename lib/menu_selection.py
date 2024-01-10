@@ -8,23 +8,24 @@ from helpers import (
 )
 
 def main():
-    menu()
-    choice = input("> ")
-    if choice == "1":
-        list_customers()
-        main()
-    if choice == "2":
-        find_by_name()
-        main()
-    if choice == "3":
-        add_customer()
-        main()
-    if choice == "4":
-        update_customer()
-        main()
-    if choice == "5":
-        add_order()
-        main()
+    flag = True
+    while flag:
+        menu()
+        choice = input("> ")
+        if choice == "0":
+            flag = False
+            print("Menu End")
+        if choice == "1":
+            list_customers()
+        if choice == "2":
+            find_by_name()
+        if choice == "3":
+            add_customer()
+        if choice == "4":
+            update_customer()
+        if choice == "5":
+            add_order()
+
 
 def menu():
     list_of_options = ["Exit the Program", "List all Customers","Find Customer by name","Add a Customer","Update a Customer","Add Order"]
