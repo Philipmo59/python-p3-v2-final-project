@@ -17,15 +17,16 @@ class Order:
     
     @classmethod
     def create_table(cls):
-        """ Create a new table to persist the attributes of ORder instances """
+        """ Create a new table to persist the attributes of Order instances """
         sql = """
             CREATE TABLE IF NOT EXISTS orders (
             id INTEGER PRIMARY KEY,
             item_name TEXT,
             quantity INTEGER,
             foreign_key INTEGER
-            )
+            );
         """
+        print("Orders table made")
         CURSOR.execute(sql)
         CONN.commit()
     

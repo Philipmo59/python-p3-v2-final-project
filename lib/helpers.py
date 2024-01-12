@@ -40,11 +40,11 @@ def update_customer():
 
 def add_order():
     customer_id = int(input("Which customer is purchasing? Please submit your id: "))
+    Order.create_table()
     if customer := Customer.find_by_id(customer_id):
         print(customer)
         new_order = input("What is the new order?")
         quantity = int(input("How many?"))
-        Order.create_table()
         new_item = Order.create(new_order,quantity,customer.id)
         customer.add_order(new_item)
         print(f"Item: {new_item.item_name} Quantity: {new_item.quantity}")
