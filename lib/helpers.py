@@ -2,9 +2,10 @@ from models.customer import Customer
 from models.shipping_orders import Order
 
 def list_customers():
-    list_of_customers = Customer.get_all()
-    for customer in list_of_customers:
+    for customer in Customer.get_all():
         print(customer)
+            
+        
 
 def find_by_name():
     customer_name = input("What is the name you are looking for?: ").lower()
@@ -19,12 +20,9 @@ def add_customer():
     customer_name = input("What is the Customer's name?: ")
     customer_age = input("What is the Customer's age?: ")
     customer_address = input("What is the Customer's address?: ")
-    try:
-        Customer.create_table()
-        Customer.create(customer_name,customer_age,customer_address)
-        print("A Customer was born")
-    except:
-        print("Error")
+    Customer.create_table()
+    Customer.create(customer_name,customer_age,customer_address)
+    print("A Customer was born")
 
 def update_customer():
     customer_id = int(input("What is the Customer ID you want to change?: "))
