@@ -36,6 +36,8 @@ class Customer:
 
     @property
     def name(self):
+        #Getter Method 
+        print("Retrieving Name")
         return self._name
     
     @name.setter
@@ -46,6 +48,35 @@ class Customer:
             raise ValueError(
                 "Name must be a non-empty string"
             )
+        
+    def get_age(self):
+        print("Retrieving Age")
+        return self._age
+
+    def set_age(self, age):
+        if isinstance(age, int):
+            print("Setting Age")
+            self._age = age
+        else:
+            raise ValueError(
+                "Age must be an number"
+            )
+        
+    age = property(get_age,set_age)
+
+    @property
+    def address(self):
+        print("Retrieving Address")
+        return self._address
+    @address.setter
+    def address (self,address):
+        if isinstance(address,str) and len(address):
+            print("Setting Address")
+            self._address = address
+        else:
+            raise ValueError("Address can not be an empty line")
+    
+        
 
     @classmethod
     def create_table(cls):
@@ -177,3 +208,8 @@ class Customer:
 
         row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
+    
+Elie = Customer("Elie",3,"homer st")
+print(Elie.name)
+print(Elie.age)
+print(Elie.address)
