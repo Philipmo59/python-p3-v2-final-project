@@ -27,6 +27,7 @@ class Customer:
         CURSOR.execute(sql,(self.id,))
         customer_orders = CURSOR.fetchall()
         updated_orders = []
+        
         if len(customer_orders) > 0 :
             for customer_order in customer_orders:
                 order_id,order_name,order_quantity,order_foreign_key = customer_order
@@ -202,7 +203,7 @@ class Customer:
         sql = """
             SELECT *
             FROM customers
-            WHERE name is ?
+            WHERE name = ?
         """
 
         row = CURSOR.execute(sql, (name,)).fetchone()

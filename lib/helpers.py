@@ -3,14 +3,12 @@ from models.shipping_orders import Order
 
 def list_customers():
     for customer in Customer.get_all():
-        print(customer)
-            
-        
+        print(customer)       
 
 def find_by_name():
     customer_name = input("What is the name you are looking for?: ")
+    customer_name = input("What is the name you are looking for?: ")
     customer_object = Customer.find_by_name(customer_name) 
-
     if customer_object != None:
         print(customer_object)
     else:
@@ -21,7 +19,8 @@ def add_customer():
     customer_age = int(input("What is the Customer's age?: "))
     customer_address = input("What is the Customer's address?: ")
     Customer.create_table()
-    Customer.create(customer_name,customer_age,customer_address)
+    new_customer = Customer.create(customer_name,customer_age,customer_address)
+    print(new_customer)
     print("A Customer was born")
 
 def update_customer():
