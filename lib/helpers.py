@@ -7,6 +7,7 @@ def list_customers():
 
 def find_by_name():
     customer_name = input("What is the name you are looking for?: ")
+    customer_name = input("What is the name you are looking for?: ")
     customer_object = Customer.find_by_name(customer_name) 
     if customer_object != None:
         print(customer_object)
@@ -15,7 +16,7 @@ def find_by_name():
 
 def add_customer():
     customer_name = input("What is the Customer's name?: ")
-    customer_age = input("What is the Customer's age?: ")
+    customer_age = int(input("What is the Customer's age?: "))
     customer_address = input("What is the Customer's address?: ")
     Customer.create_table()
     new_customer = Customer.create(customer_name,customer_age,customer_address)
@@ -24,15 +25,15 @@ def add_customer():
 
 def update_customer():
     customer_id = int(input("What is the Customer ID you want to change?: "))
-    if Customer.find_by_id(customer_id):
+    if customer := Customer.find_by_id(customer_id):
         print("Please update the following: ")
         customer_name = input("Name: ")
         customer_age = input("Age: ")
         customer_address = input("Address: ")
-        Customer.update(customer_name,customer_age,customer_address, customer_id)
+        customer.update(customer_name,customer_age,customer_address)
         print("done")
     else:
-        print("Error Occurred")
+        print("Customer ID does not exist")
 
 def add_order():
     customer_id = int(input("Which customer is purchasing? Please submit your id: "))

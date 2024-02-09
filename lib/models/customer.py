@@ -38,7 +38,7 @@ class Customer:
     @property
     def name(self):
         #Getter Method 
-        print("Retrieving Name")
+        # print("Retrieving Name")
         return self._name
     
     @name.setter
@@ -51,12 +51,12 @@ class Customer:
             )
         
     def get_age(self):
-        print("Retrieving Age")
+        # print("Retrieving Age")
         return self._age
 
     def set_age(self, age):
         if isinstance(age, int):
-            print("Setting Age")
+            # print("Setting Age")
             self._age = age
         else:
             raise ValueError(
@@ -67,12 +67,12 @@ class Customer:
 
     @property
     def address(self):
-        print("Retrieving Address")
+        # print("Retrieving Address")
         return self._address
     @address.setter
     def address (self,address):
         if isinstance(address,str) and len(address):
-            print("Setting Address")
+            # print("Setting Address")
             self._address = address
         else:
             raise ValueError("Address can not be an empty line")
@@ -164,14 +164,14 @@ class Customer:
         return [cls.instance_from_db(row) for row in rows]
 
 
-    def update(self,name=None,age=None,address=None,id= None):
+    def update(self,name,age,address):
         """Update the table row corresponding to the current Customer instance."""
         sql = """
             UPDATE customers
             SET name = ?, age = ?, address = ?
             WHERE id = ?
         """
-        CURSOR.execute(sql, (name, age, address, id))
+        CURSOR.execute(sql, (name,age,address,self.id))
         CONN.commit()
 
 
@@ -208,3 +208,4 @@ class Customer:
 
         row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
+    

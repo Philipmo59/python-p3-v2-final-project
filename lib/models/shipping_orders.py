@@ -63,18 +63,15 @@ class Order:
             SELECT * FROM orders
         """
         CURSOR.execute(sql).fetchall()
-    
+
     @classmethod
     def find_by_id(cls,id):
         sql = """
             SELECT * FROM ORDERS WHERE id = ?
         """
-        CURSOR.execute(sql,(id,))
-        found_order = CURSOR.fetchone()
+        results = CURSOR.execute(sql,(id,)).fetchone()
         CONN.commit()
-        return found_order
-    
-
+        return results
     
 
 
