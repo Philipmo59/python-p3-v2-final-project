@@ -29,6 +29,15 @@ class Order:
         print("Orders table made")
         CURSOR.execute(sql)
         CONN.commit()
+
+    @classmethod
+    def delete_table(cls):
+        sql = """
+            DROP TABLE IF EXISTS orders
+        """
+        CURSOR.execute(sql)
+        CONN.commit()
+
     
     @classmethod
     def drop_table(cls):
@@ -49,10 +58,20 @@ class Order:
     
     @classmethod
     def get_all(cls):
+        
         sql = """
             SELECT * FROM orders
         """
         CURSOR.execute(sql).fetchall()
+    
+    @classmethod
+    def find_by_id(cls,id):
+        sql = """
+            SELECT * FROM ORDERS WHERE id = ?
+        """
+        found_order = CURSOR.execute(sql,(id,)).fetchone()
+        CONN.commit()
+        return found_order
     
 
     

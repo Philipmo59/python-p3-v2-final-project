@@ -132,15 +132,14 @@ class Customer:
         return [cls.instance_from_db(row) for row in rows]
 
 
-    def update(self):
+    def update(self,name=None,age=None,address=None,id= None):
         """Update the table row corresponding to the current Customer instance."""
         sql = """
             UPDATE customers
             SET name = ?, age = ?, address = ?
             WHERE id = ?
         """
-        CURSOR.execute(sql, (self.name, self.age,
-                             self.address, self.id))
+        CURSOR.execute(sql, (name, age, address, id))
         CONN.commit()
 
 
@@ -172,7 +171,7 @@ class Customer:
         sql = """
             SELECT *
             FROM customers
-            WHERE name is ?
+            WHERE name = ?
         """
 
         row = CURSOR.execute(sql, (name,)).fetchone()
