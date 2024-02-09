@@ -69,7 +69,8 @@ class Order:
         sql = """
             SELECT * FROM ORDERS WHERE id = ?
         """
-        found_order = CURSOR.execute(sql,(id,)).fetchone()
+        CURSOR.execute(sql,(id,))
+        found_order = CURSOR.fetchone()
         CONN.commit()
         return found_order
     
