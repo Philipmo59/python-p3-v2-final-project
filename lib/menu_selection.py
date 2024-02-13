@@ -4,7 +4,8 @@ from helpers import (
     find_by_name,
     add_customer,
     update_customer,
-    add_order
+    add_order,
+    delete_order
 )
 
 def main():
@@ -25,12 +26,18 @@ def main():
             update_customer()
         if choice == "5":
             add_order()
+        if choice == "6":
+            delete_order()
 
 
 def menu():
-    list_of_options = ["Exit the Program", "List all Customers","Find Customer by name","Add a Customer","Update a Customer","Add Order"]
+    list_of_options = ["Exit the Program", "List all Customers","Find Customer by name","Add a Customer","Update a Customer","Add Order","Delete Order"]
+    print("\n")
+    print("-------------------------------------")
+
     for count, value in enumerate(list_of_options):
         print(f"{count}. {value}")
+    print("-------------------------------------")
 
 if __name__ == "__main__":
     main()

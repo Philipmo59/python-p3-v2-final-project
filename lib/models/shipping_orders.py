@@ -4,7 +4,7 @@ CONN = sqlite3.connect('tracking_order.db')
 CURSOR = CONN.cursor()
 
 class Order:
-    all = {}
+    all = []
 
     def __init__(self,item_name,quantity,foreign_key = None,id = None):
         self.id = id
@@ -12,7 +12,7 @@ class Order:
         self.quantity = quantity
         self.foreign_key = foreign_key
 
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         return f"{self.item_name}, Quantity: {self.quantity}"
     
     @classmethod
@@ -27,14 +27,6 @@ class Order:
             );
         """
         print("Orders table made")
-        CURSOR.execute(sql)
-        CONN.commit()
-
-    @classmethod
-    def delete_table(cls):
-        sql = """
-            DROP TABLE IF EXISTS orders
-        """
         CURSOR.execute(sql)
         CONN.commit()
 
@@ -55,14 +47,23 @@ class Order:
         order = cls(item_name, quantity,foreign_key)
         return order
     
-    
+    @classmethod
+    def delete_order(cls,id):
+        sql = """
+            DELETE FROM orders WHERE id = ?
+        """
+        CURSOR.execute(sql,(id,))
+        CONN.commit()
+
     @classmethod
     def get_all(cls):
         
         sql = """
             SELECT * FROM orders
         """
-        CURSOR.execute(sql).fetchall()
+        list_of_orders = CURSOR.execute(sql).fetchall()
+        for order in list_of_orders:
+            Order.all.append(cls(*order))
 
     @classmethod
     def find_by_id(cls,id):
@@ -73,7 +74,3 @@ class Order:
         CONN.commit()
         return results
     
-
-
-
-

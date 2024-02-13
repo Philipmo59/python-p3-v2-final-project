@@ -14,26 +14,25 @@ class Customer:
         self.age = age
         self.address = address
         self.shipping_orders = []
-
-    def __str__(self):
-        #Look through the Order's Table and with the foreign key, return all the orders that belong to that foreign key
-        self.get_order_list()
-        return f"<Customer {self.id}: {self.name}, Age: {self.age}, Address: {self.address}, Shipping Orders: {self.shipping_orders} "   
+    #Keep the format to the front end
+    # def __repr__(self):
+    #     #Look through the Order's Table and with the foreign key, return all the orders that belong to that foreign key
+    #     self.get_order_list()
+    #     return f"Customer {self.id}: {self.name}, Age: {self.age}, Address: {self.address}, Shipping Orders: {self.shipping_orders} "   
 
     def get_order_list(self):
         sql = """
             SELECT * FROM orders WHERE foreign_key = ?;
         """
         CURSOR.execute(sql,(self.id,))
-        customer_orders = CURSOR.fetchall()
+        all_orders = CURSOR.fetchall()
         updated_orders = []
         
-        if len(customer_orders) > 0 :
-            for customer_order in customer_orders:
+        if len(all_orders) > 0 :
+            for customer_order in all_orders:
                 order_id,order_name,order_quantity,order_foreign_key = customer_order
                 updated_orders.append(order_name)
         self.shipping_orders = updated_orders
-
 
     @property
     def name(self):
@@ -123,7 +122,6 @@ class Customer:
         customer.save()
         return customer
     
-    @classmethod
     def delete(self):
         """Delete the table row corresponding to the current Customer instance,
         delete the dictionary entry, and reassign id attribute"""
@@ -135,6 +133,16 @@ class Customer:
 
         CURSOR.execute(sql, (self.id,))
         CONN.commit()
+    
+
+    def delete_order(self,selected_order):
+        sql = """
+            DELETE FROM orders WHERE item_name = ? and foreign_key = ?
+        """
+        CURSOR.execute(sql,(selected_order,self.id))
+        CONN.commit()
+        print("Done")
+        
         
     @classmethod
     def instance_from_db(cls, row):
@@ -147,11 +155,13 @@ class Customer:
             customer.name = row[1]
             customer.age = row[2]
             customer.address = row[3]
+            customer.get_order_list()
         else:
             # if not in dictionary, create new instance and add to dictionary
             customer = cls(row[1], row[2], row[3])
             customer.id = row[0]
             cls.list_of_customers[customer.id] = customer
+            customer.get_order_list()
         return customer
 
     @classmethod
@@ -160,9 +170,8 @@ class Customer:
             SELECT * FROM customers
         """
         rows = CURSOR.execute(sql).fetchall()
+        return [cls.instance_from_db(row) for row in rows] 
         
-        return [cls.instance_from_db(row) for row in rows]
-
 
     def update(self,name,age,address):
         """Update the table row corresponding to the current Customer instance."""
@@ -171,7 +180,7 @@ class Customer:
             SET name = ?, age = ?, address = ?
             WHERE id = ?
         """
-        CURSOR.execute(sql, (name,age,address,self.id))
+        CURSOR.execute(sql, (name,age,address,self.id)).fetchall()
         CONN.commit()
 
 
@@ -198,7 +207,7 @@ class Customer:
         return cls.instance_from_db(row) if row else None
 
     @classmethod
-    def find_by_name(cls, name):
+    def find_by_name(cls, name) -> list:
         """Return Customer object corresponding to first table row matching specified name"""
         sql = """
             SELECT *
@@ -206,6 +215,7 @@ class Customer:
             WHERE name = ?
         """
 
-        row = CURSOR.execute(sql, (name,)).fetchone()
-        return cls.instance_from_db(row) if row else None
+        rows = CURSOR.execute(sql, (name,)).fetchall()
+        return [cls.instance_from_db(row) for row in rows if row]
+        
     
