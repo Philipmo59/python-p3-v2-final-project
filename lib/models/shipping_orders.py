@@ -4,7 +4,7 @@ CONN = sqlite3.connect('tracking_order.db')
 CURSOR = CONN.cursor()
 
 class Order:
-    all = []
+    all_orders = []
 
     def __init__(self,item_name,quantity,foreign_key = None,id = None):
         self.id = id
@@ -12,8 +12,8 @@ class Order:
         self.quantity = quantity
         self.foreign_key = foreign_key
 
-    def __repr__(self) -> str:
-        return f"{self.item_name}, Quantity: {self.quantity}"
+    # def __repr__(self) -> str:
+    #     return f"{self.item_name}, Quantity: {self.quantity}"
     
     @classmethod
     def create_table(cls):
@@ -26,7 +26,7 @@ class Order:
             foreign_key INTEGER
             );
         """
-        print("Orders table made")
+        # print("Orders table made")
         CURSOR.execute(sql)
         CONN.commit()
 
@@ -57,13 +57,11 @@ class Order:
 
     @classmethod
     def get_all(cls):
-        
         sql = """
             SELECT * FROM orders
         """
-        list_of_orders = CURSOR.execute(sql).fetchall()
-        for order in list_of_orders:
-            Order.all.append(cls(*order))
+        rows = CURSOR.execute(sql).fetchall()
+        return [cls.instance_from_db(row) for row in rows] 
 
     @classmethod
     def find_by_id(cls,id):
@@ -71,6 +69,45 @@ class Order:
             SELECT * FROM ORDERS WHERE id = ?
         """
         results = CURSOR.execute(sql,(id,)).fetchone()
-        CONN.commit()
         return results
     
+    @classmethod
+    def find_order_by_foreign_key(cls,foreign_key):
+        sql = """
+            SELECT * FROM ORDERS WHERE foreign_key = ?
+        """
+        results = CURSOR.execute(sql,(foreign_key,)).fetchall()
+        return results
+    
+    @classmethod
+    def add_order(cls,order,foreign_key)->None:
+        '''Takes in an instance of an Order and appends it to the customer database'''
+        sql = '''
+            INSERT INTO orders (item_name, quantity, foreign_key)
+            VALUES (?, ? , ?)
+        '''
+        CURSOR.execute(sql, (order.item_name,order.quantity, foreign_key))
+        CONN.commit()
+
+    @classmethod
+    def instance_from_db(cls, row):
+        """Return an Orders object having the attribute values from the table row."""
+
+        # Check the dictionary for  existing instance using the row's primary key
+        order = cls.all_orders.get(row[0])
+        if order:
+            #Only activates if order already exists (updates order based on the database table)
+            order.name = row[1]
+            order.age = row[2]
+            order.address = row[3]
+            order.get_order_list()
+        else:
+            # if not in dictionary, create new instance and add to dictionary
+            order = cls(row[1], row[2], row[3])
+            order.id = row[0]
+            cls.list_of_customers[order.id] = order
+            order.get_order_list()
+        return order
+
+Order.get_all()
+print(Order.all_orders)

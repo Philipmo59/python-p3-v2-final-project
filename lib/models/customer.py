@@ -26,6 +26,10 @@ class Customer:
         """
         CURSOR.execute(sql,(self.id,))
         all_orders = CURSOR.fetchall()
+
+        # rows = CURSOR.execute(sql,(self.id,)).fetchall()
+        # return [Orders.instance_from_db(row) for row in rows] 
+    
         updated_orders = []
         
         if len(all_orders) > 0 :
@@ -91,7 +95,7 @@ class Customer:
         """
         CURSOR.execute(sql)
         CONN.commit()
-        print("Table has been created")
+        # print("Table has been created")
 
 
     @classmethod
@@ -133,6 +137,7 @@ class Customer:
 
         CURSOR.execute(sql, (self.id,))
         CONN.commit()
+        print(f"{self.name} has been deleted")
     
 
     def delete_order(self,selected_order):
@@ -180,7 +185,7 @@ class Customer:
             SET name = ?, age = ?, address = ?
             WHERE id = ?
         """
-        CURSOR.execute(sql, (name,age,address,self.id)).fetchall()
+        CURSOR.execute(sql, (name,age,address,self.id))
         CONN.commit()
 
 
@@ -192,7 +197,7 @@ class Customer:
         '''
         CURSOR.execute(sql, (order.item_name,order.quantity, self.id))
         CONN.commit()
-        print(f"Added Order {order.item_name}")
+        # print(f"Added Order {order.item_name}")
 
     @classmethod
     def find_by_id(cls, id):
@@ -215,7 +220,15 @@ class Customer:
             WHERE name = ?
         """
 
-        rows = CURSOR.execute(sql, (name,)).fetchall()
-        return [cls.instance_from_db(row) for row in rows if row]
+        customer_object = CURSOR.execute(sql, (name,)).fetchone()
+        return cls.instance_from_db(customer_object)
+    @classmethod
+    def find_all_by_name(cls,name) -> list:
+        """Returns an array of Customer objects corresponding to specificed name"""
+        sql = """
+            SELECT * FROM customers WHERE name = ?
+        """
+        customer_objects = CURSOR.execute(sql,(name,)).fetchall()
+        return [cls.instance_from_db(object) for object in customer_objects]
+
         
-    
