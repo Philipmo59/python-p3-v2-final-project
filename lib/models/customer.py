@@ -20,24 +20,18 @@ class Customer:
     #     self.get_order_list()
     #     return f"Customer {self.id}: {self.name}, Age: {self.age}, Address: {self.address}, Shipping Orders: {self.shipping_orders} "   
 
-    def get_order_list(self):
+    def get_order_list(self)->None:
         sql = """
             SELECT * FROM orders WHERE foreign_key = ?;
         """
-        CURSOR.execute(sql,(self.id,))
-        all_orders = CURSOR.fetchall()
+        rows = CURSOR.execute(sql,(self.id,)).fetchall()
 
-        # rows = CURSOR.execute(sql,(self.id,)).fetchall()
-        # return [Orders.instance_from_db(row) for row in rows] 
-    
         updated_orders = []
-        
-        if len(all_orders) > 0 :
-            for customer_order in all_orders:
-                order_id,order_name,order_quantity,order_foreign_key = customer_order
-                updated_orders.append(order_name)
+        for row in rows:
+            order_object = Order.instance_from_db(row)
+            updated_orders.append(order_object.item_name)
         self.shipping_orders = updated_orders
-
+    
     @property
     def name(self):
         #Getter Method 
@@ -189,15 +183,14 @@ class Customer:
         CONN.commit()
 
 
-    def add_order(self,order:Order)->None:
-        '''Takes in an instance of an Order and appends it to the customer database'''
-        sql = '''
-            INSERT INTO orders (item_name, quantity, foreign_key)
-            VALUES (?, ? , ?)
-        '''
-        CURSOR.execute(sql, (order.item_name,order.quantity, self.id))
-        CONN.commit()
-        # print(f"Added Order {order.item_name}")
+    # def add_order(self,order:Order)->None:
+    #     '''Takes in an instance of an Order and appends it to the customer database'''
+    #     sql = '''
+    #         INSERT INTO orders (item_name, quantity, foreign_key)
+    #         VALUES (?, ? , ?)
+    #     '''
+    #     CURSOR.execute(sql, (order.item_name,order.quantity, self.id))
+    #     CONN.commit()
 
     @classmethod
     def find_by_id(cls, id):

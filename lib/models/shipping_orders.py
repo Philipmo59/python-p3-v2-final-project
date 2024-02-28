@@ -4,7 +4,7 @@ CONN = sqlite3.connect('tracking_order.db')
 CURSOR = CONN.cursor()
 
 class Order:
-    all_orders = []
+    all_orders = {}
 
     def __init__(self,item_name,quantity,foreign_key = None,id = None):
         self.id = id
@@ -97,17 +97,12 @@ class Order:
         order = cls.all_orders.get(row[0])
         if order:
             #Only activates if order already exists (updates order based on the database table)
-            order.name = row[1]
-            order.age = row[2]
-            order.address = row[3]
-            order.get_order_list()
+            order.item_name = row[1]
+            order.quantity = row[2]
+            order.foreign_key = row[3]
         else:
             # if not in dictionary, create new instance and add to dictionary
             order = cls(row[1], row[2], row[3])
             order.id = row[0]
-            cls.list_of_customers[order.id] = order
-            order.get_order_list()
+            cls.all_orders[order.id] = order
         return order
-
-Order.get_all()
-print(Order.all_orders)

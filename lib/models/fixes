@@ -13,8 +13,8 @@ relook code and make sure class and self is approipriate
 4. create a new orm method that is called findallbyname instead and use fetchall there (done)
 5. when add order, list out the customers and say submit number not id. (done)
 6. when customer name is not in the list, make a check that says customer is not in database (done)
-7. If customer's order dont exist make sure it says so 
+7. If customer's order dont exist make sure it says so (done)
 8. for menu selection, if u type -1 make sure it says i dont understand please try again (done)
-9. For get_order_list, dont send an array of strings to customers, send objects instead
-10. put add order into order class
+9. For get_order_list, dont send an array of strings to customers, send objects instead (done)
+10. put add order into order class (done)
 11. Dont let your program error out (done)
